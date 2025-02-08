@@ -197,9 +197,9 @@ fi
 #Switch Mode
 sed -i '/^use_docked_mode\\default=/c\use_docked_mode\\default=false' /storage/.config/suyu/qt-config.ini
 if [ "$SDOCK" = "0" ]; then
-	sed -i '/^use_docked_mode=/c\use_docked_mode=false' /storage/.config/suyu/qt-config.ini
+	sed -i '/^use_docked_mode=/c\use_docked_mode=0' /storage/.config/suyu/qt-config.ini
 elif [ "$SDOCK" = "1" ]; then
-	sed -i '/^use_docked_mode=/c\use_docked_mode=true' /storage/.config/suyu/qt-config.ini
+	sed -i '/^use_docked_mode=/c\use_docked_mode=1' /storage/.config/suyu/qt-config.ini
 fi
 
 #Vysnc
