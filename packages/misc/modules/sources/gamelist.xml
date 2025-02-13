@@ -324,4 +324,16 @@
         <players>1</players>
         <image>./images/suyu.svg</image>
     </game>
+    <game>
+        <path>./Update ES VK dev.sh</path>
+        <name>Update ES Vulkan devices</name>
+        <desc>Update the list of Vulkan devices listed in ES settings</desc>
+        <developer>CDELETRE</developer>
+        <publisher>ROCKNIX</publisher>
+        <rating>5.0</rating>
+        <releasedate>2025</releasedate>
+        <genre>tool</genre>
+        <players>1</players>
+        <image>./images/suyu.svg</image>
+    </game>
 </gameList>

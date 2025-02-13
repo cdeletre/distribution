@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2022-present JELOS (https://github.com/JustEnoughLinuxOS)
 
@@ -35,6 +34,7 @@ GAME=$(echo "${1}"| sed "s#^/.*/##")
 CPU_ACCURACY=$(get_setting cpu_accuracy switch "${GAME}")
 CPU_BACKEND=$(get_setting cpu_backend switch "${GAME}")
 GPU_BACKEND=$(get_setting graphics_backend switch "${GAME}")
+VULKAN_DEVICE=$(get_setting vulkan_device switch "${GAME}")
 ASTC_DECODING=$(get_setting astc_decoding_method switch "${GAME}")
 VSYNC=$(get_setting vsync switch "${GAME}")
 ASPEC_TRATIO=$(get_setting aspect_ratio switch "${GAME}")
@@ -87,6 +87,19 @@ elif [ "$GPU_BACKEND" = "1" ]; then
 	sed -i '/^backend=/c\backend=1' /storage/.config/suyu/qt-config.ini
 else
 	sed -i '/^backend\\default=/c\backend\\default=true' /storage/.config/suyu/qt-config.ini
+fi
+
+#Vulkan device
+[[ -z $VULKAN_DEVICE ]] && VULKAN_DEVICE=0
+VULKAN_DEVICE_COUNT=`vulkaninfo --summary | grep "deviceName" | wc -l`
+[[ $VULKAN_DEVICE -ge $VULKAN_DEVICE_COUNT ]] && VULKAN_DEVICE=0
+
+if [ $VULKAN_DEVICE -gt 0 ]; then
+	sed -i '/^vulkan_device\\default=/c\vulkan_device\\default=false' /storage/.config/suyu/qt-config.ini
+	sed -i "/^vulkan_device=/c\vulkan_device=$VULKAN_DEVICE" /storage/.config/suyu/qt-config.ini
+else
+	sed -i '/^vulkan_device\\default=/c\vulkan_device\\default=true' /storage/.config/suyu/qt-config.ini
+	sed -i "/^vulkan_device=/c\vulkan_device=0" /storage/.config/suyu/qt-config.ini
 fi
 
 #ASTC Acceleration (default to 1/GPU)
