@@ -4,9 +4,25 @@
 
 PKG_NAME="mesa"
 PKG_LICENSE="OSS"
-PKG_VERSION="25.0.0-rc2"
+
+#HTTPS
+#PKG_VERSION="24.3.0"
+#PKG_VERSION="24.3.4"
+#PKG_VERSION="25.0.0-rc2"
+PKG_VERSION="25.0.0-rc3"
+VERSION_DISPLAY="${PKG_VERSION}"
 PKG_SITE="http://www.mesa3d.org/"
 PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-${PKG_VERSION}/mesa-mesa-${PKG_VERSION}.tar.gz"
+
+#GITHUB
+#PKG_SITE="https://gitlab.freedesktop.org/mesa/mesa"
+#PKG_URL="${PKG_SITE}.git"
+#PKG_GIT_CLONE_BRANCH="main"
+#PKG_GIT_CLONE_SINGLE="yes"
+#PKG_VERSION="4497ea2a31af92cc842cbc8eda3cce1b29ca4872" # Mesa Turnip v24.3.0 - Revision 9v2
+#VERSION_DISPLAY="24.3.0-rev9v2"
+
+
 PKG_DEPENDS_TARGET="toolchain expat libdrm zstd Mako:host pyyaml:host"
 PKG_LONGDESC="Mesa is a 3-D graphics library with an API."
 PKG_TOOLCHAIN="meson"
@@ -27,7 +43,8 @@ PKG_MESON_OPTS_TARGET=" ${MESA_LIBS_PATH_OPTS} \
                        -Dlibunwind=disabled \
                        -Dlmsensors=disabled \
                        -Dbuild-tests=false \
-                       -Dosmesa=false"
+                       -Dosmesa=false \
+                       -Dversion-display=${VERSION_DISPLAY}"
 
 if [ "${DISPLAYSERVER}" = "x11" ]; then
   PKG_DEPENDS_TARGET+=" xorgproto libXext libXdamage libXfixes libXxf86vm libxcb libX11 libxshmfence libXrandr libglvnd glfw"
