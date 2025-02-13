@@ -56,16 +56,37 @@ fi
 rm -rf /storage/.config/dolphin-emu/StateSaves
 ln -sf /storage/roms/savestates/gamecube /storage/.config/dolphin-emu/StateSaves
 
-# Link and copy bios and other system stuff to roms
-if [ ! -d "/storage/roms/bios/dolphin/GC/" ]; then
+# Copy bios, memory cards and other system stuff to roms
+if [ ! -d "/storage/roms/bios/GC/" ]; then
     mkdir -p /storage/roms/bios/GC/{USA,JAP,EUR}
     cp -r /storage/.config/dolphin-emu/GC /storage/roms/bios/
 fi
 
-rm -rf /storage/.config/dolphin-emu/GC/{USA,JAP,EUR}
-ln -sf /storage/roms/bios/dolphin/GC/USA /storage/.config/dolphin-emu/GC/USA
-ln -sf /storage/roms/bios/dolphin/GC/JAP /storage/.config/dolphin-emu/GC/JAP
-ln -sf /storage/roms/bios/dolphin/GC/EUR /storage/.config/dolphin-emu/GC/EUR
+# Link bios and memory cards to roms
+for REGION in EUR JAP USA
+do
+  # Link bios
+  rm -rf "/storage/.config/dolphin-emu/GC/${REGION}"
+  ln -sf "/storage/roms/bios/GC/${REGION}" "/storage/.config/dolphin-emu/GC/${REGION}"
+
+  # Link memory cards, copying to roms/bios first as needed
+  for SLOT in A B
+  do
+    MEM_CARD_FILE="MemoryCard${SLOT}.${REGION}.raw"
+    CONFIG_MEM_CARD="/storage/.config/dolphin-emu/GC/${MEM_CARD_FILE}"
+    ROMS_BIOS_MEM_CARD="/storage/roms/bios/GC/${MEM_CARD_FILE}"
+
+    if [ -f "${ROMS_BIOS_MEM_CARD}" ]; then
+      # Exists in roms/bios, remove from .config and link
+      rm -f "${CONFIG_MEM_CARD}"
+      ln -sf "${ROMS_BIOS_MEM_CARD}" "${CONFIG_MEM_CARD}"
+    elif [ -f "${CONFIG_MEM_CARD}" ]; then
+      # Only exists in .config, move to roms/bios and link
+      mv -f "${CONFIG_MEM_CARD}" "${ROMS_BIOS_MEM_CARD}"
+      ln -sf "${ROMS_BIOS_MEM_CARD}" "${CONFIG_MEM_CARD}"
+    fi
+  done
+done
 
 # Grab a clean settings file during boot
 cp -r /usr/config/dolphin-emu/GFX.ini /storage/.config/dolphin-emu/GFX.ini
