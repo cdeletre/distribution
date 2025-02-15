@@ -75,7 +75,7 @@ case "${DEVICE}" in
   SM8250)
     [ "${ENABLE_32BIT}" == "true" ] && EMUS_32BIT="box86 daedalus-sa desmume-lr gpsp-lr pcsx_rearmed-lr wine"
     PKG_EMUS+=" aethersx2-sa box64 cemu-sa dolphin-sa drastic-sa lime3ds-sa melonds-sa portmaster rpcs3-sa scummvmsa supermodel-sa \
-               yabasanshiro-sa xemu-sa"
+               yabasanshiro-sa xemu-sa citron-sa"
     LIBRETRO_CORES+=" beetle-psx-lr beetle-saturn-lr bsnes-lr bsnes-hd-lr dolphin-lr flycast-lr geolith-lr panda3ds-lr pcsx_rearmed-lr uae4arm kronos-lr"
     PKG_RETROARCH+=" retropie-shaders"
   ;;
@@ -555,6 +555,16 @@ makeinstall_target() {
       install_script "Start CEMU.sh"
     ;;
   esac
+
+  ### Nintendo Switch
+  case ${DEVICE} in
+    SM8250)
+      add_emu_core switch citron citron-sa true
+      add_es_system switch
+      install_script "Start Citron.sh"
+    ;;
+  esac
+
 
   ### Sega GameGear
   add_emu_core gamegear retroarch gearsystem true

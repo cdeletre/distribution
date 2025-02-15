@@ -4,7 +4,9 @@
 
 PKG_NAME="mesa"
 PKG_LICENSE="OSS"
-PKG_VERSION="24.3.4"
+
+PKG_VERSION="25.0.0-rc3"
+VERSION_DISPLAY="${PKG_VERSION}"
 PKG_SITE="http://www.mesa3d.org/"
 PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-${PKG_VERSION}/mesa-mesa-${PKG_VERSION}.tar.gz"
 PKG_DEPENDS_TARGET="toolchain expat libdrm zstd Mako:host pyyaml:host"
@@ -27,7 +29,8 @@ PKG_MESON_OPTS_TARGET=" ${MESA_LIBS_PATH_OPTS} \
                        -Dlibunwind=disabled \
                        -Dlmsensors=disabled \
                        -Dbuild-tests=false \
-                       -Dosmesa=false"
+                       -Dosmesa=false \
+                       -Dversion-display=${VERSION_DISPLAY}"
 
 if [ "${DISPLAYSERVER}" = "x11" ]; then
   PKG_DEPENDS_TARGET+=" xorgproto libXext libXdamage libXfixes libXxf86vm libxcb libX11 libxshmfence libXrandr libglvnd glfw"
