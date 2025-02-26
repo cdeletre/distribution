@@ -51,6 +51,16 @@ FAST_GPU_TIME=$(get_setting fast_gpu_time switch "${GAME}")
 RUMBLE=$(get_setting rumble switch "${GAME}")
 RUMBLE_STRENGTH=$(get_setting rumble_strength switch "${GAME}")
 SWITCH_MODE=$(get_setting switch_mode switch "${GAME}")
+ZRAM=$(get_setting zram switch "${GAME}")
+ZRAM_COMP_ALGO=$(get_setting zram comp algo switch "${GAME}")
+
+if [ "$ZRAM_COMP_ALGO" = "1" ]; then
+	ZRAM_ALGORITHM="lz4"
+elif [ "$ZRAM_COMP_ALGO" = "2" ]; then
+	ZRAM_ALGORITHM="lzo"
+else
+	ZRAM_ALGORITHM="zstd"
+fi
 
 #CPU Accuracy
 # src/common/settings_enums.h ENUM(CpuAccuracy, Auto, Accurate, Unsafe, Paranoid);
@@ -304,6 +314,19 @@ else
 	sed -i '/^use_docked_mode\\default=/c\use_docked_mode\\default=true' /storage/.config/citron/qt-config.ini
 fi
 
+#ZRAM
+ZRAM_CITRON=0
+if [[ $ZRAM -gt 0 ]]; then
+	zramctl -n | grep zram0 
+	if [[ ! $? -eq 0 ]]; then
+		lsmod | grep zram || modprobe zram
+		zramctl /dev/zram0 --algorithm "$ZRAM_ALGORITHM" --size "${ZRAM}M"
+		mkswap /dev/zram0
+		swapon --discard --priority 20000 /dev/zram0
+		ZRAM_CITRON=1
+	fi
+fi
+
 #Never ask to confrim close
 sed -i '/^confirmStop\\default=/c\confirmStop\\default=false' /storage/.config/citron/qt-config.ini
 sed -i '/^confirmStop=/c\confirmStop=3' /storage/.config/citron/qt-config.ini
@@ -322,3 +345,9 @@ set_kill set "-9 citron"
 
 #Run citron emulator
 /usr/bin/citron -f -g "${1}"
+
+#ZRAM
+if [[ $ZRAM_CITRON -eq 1 ]]; then
+	swapoff /dev/zram0
+	rmmod zram
+fi
