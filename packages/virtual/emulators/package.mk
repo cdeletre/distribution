@@ -75,24 +75,13 @@ case "${DEVICE}" in
   SM8250|SM8550)
     [ "${ENABLE_32BIT}" == "true" ] && EMUS_32BIT="box86 daedalusx64-sa desmume-lr gpsp-lr pcsx_rearmed-lr wine"
     PKG_EMUS+=" aethersx2-sa box64 cemu-sa dolphin-sa drastic-sa lime3ds-sa melonds-sa portmaster rpcs3-sa scummvmsa supermodel-sa \
-               yabasanshiro-sa xemu-sa"
+               yabasanshiro-sa xemu-sa ryujinx-sa"
     LIBRETRO_CORES+=" beetle-psx-lr beetle-saturn-lr bsnes-lr bsnes-hd-lr dolphin-lr flycast-lr geolith-lr panda3ds-lr pcsx_rearmed-lr uae4arm kronos-lr"
     PKG_RETROARCH+=" retropie-shaders"
   ;;
 esac
 
-# Split building emulators into 2 stages, needed to fit the jobs into the 6 hour GH runner time limit.
-case "${TARGET_TYPE}" in
-  cores_only)
-    PKG_DEPENDS_TARGET+=" ${LIBRETRO_CORES}"
-  ;;
-  emus_only)
-    PKG_DEPENDS_TARGET+=" ${PKG_EMUS} ${EMUS_32BIT} ${PKG_RETROARCH}"
-  ;;
-  *)
-    PKG_DEPENDS_TARGET+=" ${PKG_EMUS} ${EMUS_32BIT} ${PKG_RETROARCH} ${LIBRETRO_CORES}"
-  ;;
-esac
+PKG_DEPENDS_TARGET+=" ${PKG_EMUS} ${EMUS_32BIT} ${PKG_RETROARCH} ${LIBRETRO_CORES}"
 
 install_script() {
   if [ ! -d "${INSTALL}/usr/config/modules" ]
@@ -566,6 +555,16 @@ makeinstall_target() {
       install_script "Start CEMU.sh"
     ;;
   esac
+
+  ### Nintendo Switch
+  case ${DEVICE} in
+    SM8250)
+      add_emu_core switch ryujinx ryujinx-sa true
+      add_es_system switch
+      install_script "Start Ryujinx.sh"
+    ;;
+  esac
+
 
   ### Sega GameGear
   add_emu_core gamegear retroarch gearsystem true
