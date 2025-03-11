@@ -9,7 +9,7 @@ PKG_LONGDESC="Citron is a high-performance and easy-to-use emulator, tailored fo
 PKG_TOOLCHAIN="cmake"
 PKG_SITE="https://git.citron-emu.org/Citron/Citron"
 PKG_URL="${PKG_SITE}.git"
-PKG_VERSION="1c9e17496b6f9f4b083c62aa25548617dd179a8b"
+PKG_VERSION="dad885967942477d887b5dd16a97f07d2316bd3a" # v0.6-canary-refresh
 
 PKG_CMAKE_OPTS_TARGET+="-DENABLE_QT=ON \
                     -DENABLE_QT6=ON \
